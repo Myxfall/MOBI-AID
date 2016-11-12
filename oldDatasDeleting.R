@@ -1,5 +1,5 @@
 #!/usr/bin/Rscript
-setwd("/Users/user/Dropbox/ULB/3emeBach/MOBIAid/Scripts/")
+setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
 
 library("dplyr")
 library("RSQLite")
@@ -7,7 +7,7 @@ library("RSQLite")
 #Take the actually epoch timestamp
 timestamp <- as.POSIXct( Sys.time() )
 #Convert in INTEGER
-timestamp <- as.integer( x )
+timestamp <- as.integer( timestamp )
 #Substract 604800 sec on the timestamp to have the timeStamp one week ago
 timeStampWeekAgo <- timestamp - 604800
 

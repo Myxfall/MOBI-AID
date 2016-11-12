@@ -1,4 +1,5 @@
-setwd("/Users/user/Dropbox/ULB/3emeBach/MOBIAid/Scripts/")
+#!/usr/bin/Rscript
+setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
 
 library("dplyr")
 library("ggplot2")

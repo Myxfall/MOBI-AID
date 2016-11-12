@@ -1,6 +1,5 @@
 #!/usr/bin/Rscript
-
-setwd("/Users/user/Dropbox/ULB/3emeBach/MOBIAid/Scripts/")
+setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
 
 library("RSQLite")
 #Wich one of json library ?
