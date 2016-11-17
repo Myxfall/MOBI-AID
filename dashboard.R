@@ -22,7 +22,7 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = "dashboard", 
-              box(leafletOutput("plot1", height = 550), height = "100%", width = "100%")),
+              box(leafletOutput("plot1", height = 600), height = "100%", width = "100%")),
       tabItem(tabName = "information", 
               h2("Dashboard informations"))
     )
@@ -30,8 +30,8 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output) {
-  set.seed(122)
-  histdata <- rnorm(500)
+  #set.seed(122)
+  #histdata <- rnorm(500)
   
   con <- dbConnect(SQLite(), dbname="mobilityBike.db")
   query <- "SELECT longitude FROM StaticTable"
@@ -40,14 +40,8 @@ server <- function(input, output) {
   lat <- unlist(dbGetQuery(con, query))
   query <- "SELECT address FROM StaticTable"
   add <- as.vector(unlist(dbGetQuery(con, query)))
-  print(typeof(add))
-  
+
   mat <- matrix(c(long,lat), ncol = 2)
-  try <- c("BONJOUR", "ALLO", "STANDARD")
-  #Forming the matrix of station's positions
-  a <- c(4.334831,4.352776,4.346942)
-  b <- c(50.89752,50.85192,50.84563)
-  c <- matrix(c(a,b), ncol = 2)
   
   map = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addMarkers(data = mat, popup = add)
   output$plot1 = renderLeaflet(map)
