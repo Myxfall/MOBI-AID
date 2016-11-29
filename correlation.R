@@ -23,8 +23,8 @@ corrBetweenStations <- function(station_One, station_two) {
   xrange <- range(dataStationOne$timeStamp)
   yrange <- range(dataStationOne$available_bikes)
   
-  plot(xrange, yrange, type="n", xlab="Time", ylab="Available Bikes")
-  lines(dataStationOne$timeStamp, dataStationOne$available_bikes, lwd=1.5)   
+  #plot(xrange, yrange, type="n", xlab="Time", ylab="Available Bikes")
+  #lines(dataStationOne$timeStamp, dataStationOne$available_bikes, lwd=1.5)   
 }
 
 corrBetweenStations(1,2)
