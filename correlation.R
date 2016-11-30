@@ -4,6 +4,9 @@ setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
 library("RSQLite")
 library("ggplot2")
 
+# SQL query: get the station information with max timeStamp
+# select * from dynamicTable where timeStamp in (select max(timeStamp) from dynamicTable where stationID = 1)
+
 con <- dbConnect(SQLite(), dbname="mobilityBike.db")
 
 corrBetweenStations <- function(station_One, station_two) {
