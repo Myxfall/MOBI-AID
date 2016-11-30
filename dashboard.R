@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript
-#setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
-setwd("/home/maxromai/Documents/memoire/MOBI-AID")
+setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
+#setwd("/home/maxromai/Documents/memoire/MOBI-AID")
 
 ## app.R ##
 library(shiny)
