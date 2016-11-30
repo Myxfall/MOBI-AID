@@ -1,6 +1,6 @@
 #!/usr/bin/Rscript
-setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
-#setwd("/home/maxromai/Documents/memoire/MOBI-AID")
+#setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
+setwd("/home/maxromai/Documents/memoire/MOBI-AID")
 
 ## app.R ##
 library(shiny)
@@ -32,7 +32,7 @@ ui <- dashboardPage(
                             selected = 1),
                 #Prompt select Value
                 hr(),
-                fluidRow(column(3, verbatimTextOutput("value")))
+                fluidRow(column(4, verbatimTextOutput("selectStation")))
               )
               
       ),
@@ -44,7 +44,7 @@ ui <- dashboardPage(
   )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   #set.seed(122)
   #histdata <- rnorm(500)
   
@@ -64,13 +64,18 @@ server <- function(input, output) {
   mapInTime = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13)
   output$plot2 = renderLeaflet(mapInTime)
   
-  query <- "SELECT name from StaticTable"
+  query <- "SELECT name from StaticTable ORDER BY number"
   namesStation <- dbGetQuery(con, query)
   print(typeof(namesStation))
   
   #link: http://shiny.rstudio.com/reference/shiny/latest/updateSelectInput.html
+  updateSelectInput(session, "listStations",
+                    choices = namesStation
+                    #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
+  )
+  
   #Output ListBox
-  output$value <- renderPrint({ input$listStations })
+  output$selectStation <- renderPrint({ input$listStations })
 }
 
 shinyApp(ui, server)
