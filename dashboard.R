@@ -7,6 +7,7 @@ library(shiny)
 library(shinydashboard)
 library(leaflet)
 library("RSQLite")
+library(dygraphs)
 
 ui <- dashboardPage(
   dashboardHeader(title = "MOBIAID Dashboard"),
@@ -25,15 +26,14 @@ ui <- dashboardPage(
     tabItems(
       tabItem(tabName = "dashboard", 
               box(leafletOutput("plot1", height = 600), height = "100%", width = "100%"),
-              fluidPage(
+              box(fluidPage(
                 # ListBox 
                 selectInput("listStations", label = h3("Select a station"), 
                             choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3), 
                             selected = 1),
                 #Prompt select Value
-                hr(),
-                fluidRow(column(4, verbatimTextOutput("selectStation")))
-              )
+                dygraphOutput("dygraph")
+              ), width = 100)
               
       ),
 	  tabItem(tabName = "villoTime",
@@ -66,16 +66,33 @@ server <- function(input, output, session) {
   
   query <- "SELECT name from StaticTable ORDER BY number"
   namesStation <- dbGetQuery(con, query)
-  print(typeof(namesStation))
-  
+
   #link: http://shiny.rstudio.com/reference/shiny/latest/updateSelectInput.html
   updateSelectInput(session, "listStations",
                     choices = namesStation
                     #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
   )
   
-  #Output ListBox
-  output$selectStation <- renderPrint({ input$listStations })
+  #Query Select station select distinct * from dynamicTable where timeStamp in (select max(timeStamp) from dynamicTable where stationID = (
+  #select number from staticTable where name = "211 - METRO CERIA"))
+  data <- dbGetQuery(con, "SELECT timeStamp, available_bikes from dynamicTable where stationID = 3")
+
+  #output$value <- renderText(input$listStations)
+  observe({
+    #dataSave <- isolate(input$listStations)
+    dataName <- as.character(input$listStations)
+    print(dataName)
+    
+    query <- paste0("SELECT timeStamp, available_bikes FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
+    print(query)
+    data_two <- dbGetQuery(con, query)
+    print(data_two)
+    
+    #Output ListBox
+    output$dygraph <- renderDygraph(dygraph(data_two))
+  })
+  
+
 }
 
 shinyApp(ui, server)
