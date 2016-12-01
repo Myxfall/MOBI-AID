@@ -81,15 +81,27 @@ server <- function(input, output, session) {
   observe({
     #dataSave <- isolate(input$listStations)
     dataName <- as.character(input$listStations)
-    print(dataName)
-    
+
     query <- paste0("SELECT timeStamp, available_bikes FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
-    print(query)
-    data_two <- dbGetQuery(con, query)
-    print(data_two)
+
+    queryOne <- "SELECT timeStamp from dynamicTable where stationID = 3"
+    queryTwo <- "SELECT available_bikes from dynamicTable where stationID = 3"
+    dataTime <- dbGetQuery(con, queryOne)
+    dataBike <- dbGetQuery(con, queryTwo)
+    #dataTimeInPOSIX <- as.POSIXct(dataTime, origin="1970-01-01")
+    #for (i in 1:length(dataTime[[1]])) {
+     # dataTime[[1]][i] <- as.character(as.POSIXct(as.numeric(dataTime[[1]][1]), origin="1970-01-01"))
+    #}
     
+    #Diviser par 1000 le timestamp
+    #dataTime[[1]][2518] <- as.character(as.POSIXct(as.numeric(dataTime[[1]][1]), origin="1970-01-01"))
+    dataBoth <- cbind(dataTime, dataBike)
+    print(as.xts(dataTime))
+    
+    #data_two <- dbGetQuery(con, query)
+
     #Output ListBox
-    output$dygraph <- renderDygraph(dygraph(data_two))
+    output$dygraph <- renderDygraph(dygraph(dataBoth) %>% dyRangeSelector())
   })
   
 
