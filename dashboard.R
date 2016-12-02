@@ -96,12 +96,12 @@ server <- function(input, output, session) {
     #Diviser par 1000 le timestamp
     #dataTime[[1]][2518] <- as.character(as.POSIXct(as.numeric(dataTime[[1]][1]), origin="1970-01-01"))
     dataBoth <- cbind(dataTime, dataBike)
-    print(as.xts(dataTime))
+    #print(as.xts(dataTime))
     
-    #data_two <- dbGetQuery(con, query)
+    data_two <- dbGetQuery(con, query)
 
     #Output ListBox
-    output$dygraph <- renderDygraph(dygraph(dataBoth) %>% dyRangeSelector())
+    output$dygraph <- renderDygraph(dygraph(data_two) %>% dyRangeSelector())
   })
   
 
