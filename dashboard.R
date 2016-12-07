@@ -54,7 +54,7 @@ server <- function(input, output, session) {
   long <- unlist(dbGetQuery(con, query))
   query <- "SELECT latitude FROM StaticTable"
   lat <- unlist(dbGetQuery(con, query))
-  query <- "SELECT address FROM StaticTable"
+  query <- "SELECT name FROM StaticTable"
   add <- as.vector(unlist(dbGetQuery(con, query)))
 
   mat <- matrix(c(long,lat), ncol = 2)
@@ -62,7 +62,11 @@ server <- function(input, output, session) {
   map = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addMarkers(data = mat, popup = add)
   output$plot1 = renderLeaflet(map)
 
-  mapInTime = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13)
+  query <- paste("SELECT stationID, timeStamp, available_bikes FROM dynamicTable ORDER BY stationID")
+  timeVilloFrame <- dbGetQuery(con, query)
+  print(timeVilloFrame)
+  
+  mapInTime = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>%   addCircles(data = mat, weight = 1, popup = add)
   output$plot2 = renderLeaflet(mapInTime)
   
   query <- "SELECT name from StaticTable ORDER BY number"
@@ -100,15 +104,11 @@ server <- function(input, output, session) {
       tmp <-  as.POSIXct(dataTime[[1]][i]/1000, origin="1970-01-01")
       doubleVectorDate[i] <- tmp
     }
-    print(doubleVectorDate)
-    print(typeof(doubleVectorDate))
     xtsData <- xts(dataBike, doubleVectorDate)
     
     #Output ListBox
     output$dygraph <- renderDygraph(dygraph(xtsData) %>% dyRangeSelector())
   })
-  
-
 }
 
 shinyApp(ui, server)
