@@ -86,33 +86,26 @@ server <- function(input, output, session) {
     query <- paste0("SELECT timeStamp, available_bikes FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
     data_two <- dbGetQuery(con, query)
     
-    queryOne <- "SELECT timeStamp from dynamicTable where stationID = 3"
-    queryTwo <- "SELECT available_bikes from dynamicTable where stationID = 3"
+    queryOne <- paste0("SELECT timeStamp FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
+    queryTwo <- paste0("SELECT available_bikes FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
     dataTime <- dbGetQuery(con, queryOne)
     dataBike <- dbGetQuery(con, queryTwo)
     
     #Transformation epoch timeStamp to date object
     #Need to divide by 1000, because epoch is in milisecond
-    #dateTry <- dataTime[[1]][500]
-    #dateOne <- as.Date(as.POSIXct(dateTry/1000, origin="1970-01-01"))
-    #print(dateOne)
-    
-    vector <- character()
-    #vector <- c()
-    for (i in 1:length(dataTime[[1]])) {
-      #dataTime[[1]][i] <- as.Date(as.POSIXct(dataTime[[1]][i]/1000, origin="1970-01-01"))
-      #print(dataTime[[1]][i])
-      
-      #dateTry <- dataTime[[1]][i]
-      #dateOne <- as.Date(as.POSIXct(dateTry/1000, origin="1970-01-01"))
-      #vector[i] <- as.character(dateOne)
-      #print(vector[i])
-    } 
-    #tryvector <- as.xts(as.POSIXlt(dataTime))
-    #dataBoth <- cbind(vector, dataBike)
 
+    # ---------- CONVERSION TO XTS ----------
+    doubleVectorDate <- Sys.time()+1:length(dataTime[[1]])
+    for (i in 1:length(dataTime[[1]])) {
+      tmp <-  as.POSIXct(dataTime[[1]][i]/1000, origin="1970-01-01")
+      doubleVectorDate[i] <- tmp
+    }
+    print(doubleVectorDate)
+    print(typeof(doubleVectorDate))
+    xtsData <- xts(dataBike, doubleVectorDate)
+    
     #Output ListBox
-    output$dygraph <- renderDygraph(dygraph(data_two) %>% dyRangeSelector())
+    output$dygraph <- renderDygraph(dygraph(xtsData) %>% dyRangeSelector())
   })
   
 
