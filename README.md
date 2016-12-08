@@ -2,7 +2,8 @@
 Dashboard of bikeStations villo in brussels
 
 ## Install
-Needing packages: 
+Needing packages:  
+
   * shiny
   * shinydashboard
   * leaflet
