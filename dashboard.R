@@ -37,8 +37,12 @@ ui <- dashboardPage(
               ), width = 100)
               
       ),
-	  tabItem(tabName = "villoTime",
-			  box(leafletOutput("plot2", height = 600), height = "100%", width = "100%")),
+  	  tabItem(tabName = "villoTime",
+  			      box(leafletOutput("plot2", height = 600), height = "100%", width = "100%"),
+  			      box(fluidPage(
+  			        sliderInput("slider", label = h3("Select Time"), min = 1, max = 100, value = 1)
+  			       ),width = 100)
+  		),
       tabItem(tabName = "information", 
               h2("Dashboard informations"))
     )
@@ -50,11 +54,11 @@ server <- function(input, output, session) {
   #histdata <- rnorm(500)
   
   con <- dbConnect(SQLite(), dbname="mobilityBike.db")
-  query <- "SELECT longitude FROM StaticTable"
+  query <- "SELECT longitude FROM StaticTable ORDER BY number"
   long <- unlist(dbGetQuery(con, query))
-  query <- "SELECT latitude FROM StaticTable"
+  query <- "SELECT latitude FROM StaticTable ORDER BY number"
   lat <- unlist(dbGetQuery(con, query))
-  query <- "SELECT name FROM StaticTable"
+  query <- "SELECT address FROM StaticTable ORDER BY number"
   add <- as.vector(unlist(dbGetQuery(con, query)))
 
   mat <- matrix(c(long,lat), ncol = 2)
@@ -62,13 +66,18 @@ server <- function(input, output, session) {
   map = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addMarkers(data = mat, popup = add)
   output$plot1 = renderLeaflet(map)
 
+  # ---------- VILLO IN TIME ----------
   query <- paste("SELECT stationID, timeStamp, available_bikes FROM dynamicTable ORDER BY stationID")
   timeVilloFrame <- dbGetQuery(con, query)
   print(timeVilloFrame)
   
-  mapInTime = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>%   addCircles(data = mat, weight = 1, popup = add)
-  output$plot2 = renderLeaflet(mapInTime)
+  query <- paste0("SELECT stationID FROM dynamicTable WHERE stationID = 1")
+  station_One <- dbGetQuery(con, query)
+  numberOccurrence <- length(station_One[[1]])
+
+
   
+  # ---------- DYGRAPH PLOT ----------
   query <- "SELECT name from StaticTable ORDER BY number"
   namesStation <- dbGetQuery(con, query)
 
@@ -77,6 +86,7 @@ server <- function(input, output, session) {
                     choices = namesStation
                     #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
   )
+  updateSliderInput(session, "slider", min = 1, max = numberOccurrence)
   
   #Query Select station select distinct * from dynamicTable where timeStamp in (select max(timeStamp) from dynamicTable where stationID = (
   #select number from staticTable where name = "211 - METRO CERIA"))
@@ -108,6 +118,22 @@ server <- function(input, output, session) {
     
     #Output ListBox
     output$dygraph <- renderDygraph(dygraph(xtsData) %>% dyRangeSelector())
+    
+    # ---------- SLIDER TIME ----------
+    selectedTime <- as.numeric(input$slider)
+    #Getting the informations of the selected timeStamp
+    selectedTimeStamp <- 1
+    bikes <- c()
+    indexVect <- 1
+    for (i in seq(selectedTime,length(timeVilloFrame[[1]]), numberOccurrence)) {
+      #Multiple value for better vizualisation
+      bikes[indexVect] <- timeVilloFrame[[3]][i] * 5
+      print(bikes[indexVect])
+      indexVect <- indexVect + 1
+    }
+    
+    mapInTime = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addCircles(data = mat, radius = bikes, popup = add, color='red')
+    output$plot2 = renderLeaflet(mapInTime)    
   })
 }
 
