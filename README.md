@@ -6,11 +6,11 @@ This is a dashboard where you can see various informations about the using of th
 
 ### Geographical position
 This leaflet map represent the positions of all the stations in Brussels
-![markerPosition](pictures/positions)
+![markerPosition](pictures/positions.png)
 
 #### Graph of the using of bikes
-![plot](pictures/plot)
+![plot](pictures/plot.png)
 
 ### Villo in time
 In this map, you can see the different frequencie of bikes in the time, you have a slider to select the historical of bikes
-![time](pictures/fresPlot)
+![time](pictures/fresPlot.png)
