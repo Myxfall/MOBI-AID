@@ -1,6 +1,22 @@
 # MOBI-AID
 Dashboard of bikeStations villo in brussels
 
+## Install
+Needing packages:
+  * shiny
+  * shinydashboard
+  * leaflet
+  * RSQLite
+  * dygraphs
+  * xts
+
+> ./dynamicTable.R
+> ./parserStations.R
+
+> ./dashboard.R
+
+And go to the localhost on your browser
+
 ## Presentation
 This is a dashboard where you can see various informations about the using of the villo in Brussels.
 
