@@ -10,11 +10,13 @@ Needing packages:
   * dygraphs
   * xts
 
-> ./dynamicTable.R
-> ./parserStations.R
 
-> ./dashboard.R
 
+    ./dynamicTable.R
+    ./paserStations.R
+    
+    ./dashboard.R
+ 
 And go to the localhost on your browser
 
 ## Presentation
