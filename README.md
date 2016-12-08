@@ -10,7 +10,7 @@ Needing packages:
   * dygraphs
   * xts
 
-
+### Installation
 
     ./dynamicTable.R
     ./paserStations.R
