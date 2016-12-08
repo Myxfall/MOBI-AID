@@ -50,8 +50,6 @@ ui <- dashboardPage(
 )
 
 server <- function(input, output, session) {
-  #set.seed(122)
-  #histdata <- rnorm(500)
   
   con <- dbConnect(SQLite(), dbname="mobilityBike.db")
   query <- "SELECT longitude FROM StaticTable ORDER BY number"
@@ -75,7 +73,7 @@ server <- function(input, output, session) {
   station_One <- dbGetQuery(con, query)
   numberOccurrence <- length(station_One[[1]])
 
-
+  updateSliderInput(session, "slider", min = 1, max = numberOccurrence)
   
   # ---------- DYGRAPH PLOT ----------
   query <- "SELECT name from StaticTable ORDER BY number"
@@ -86,20 +84,10 @@ server <- function(input, output, session) {
                     choices = namesStation
                     #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
   )
-  updateSliderInput(session, "slider", min = 1, max = numberOccurrence)
   
-  #Query Select station select distinct * from dynamicTable where timeStamp in (select max(timeStamp) from dynamicTable where stationID = (
-  #select number from staticTable where name = "211 - METRO CERIA"))
-  data <- dbGetQuery(con, "SELECT timeStamp, available_bikes from dynamicTable where stationID = 3")
-
-  #output$value <- renderText(input$listStations)
   observe({
-    #dataSave <- isolate(input$listStations)
     dataName <- as.character(input$listStations)
 
-    query <- paste0("SELECT timeStamp, available_bikes FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
-    data_two <- dbGetQuery(con, query)
-    
     queryOne <- paste0("SELECT timeStamp FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
     queryTwo <- paste0("SELECT available_bikes FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataName,"')")
     dataTime <- dbGetQuery(con, queryOne)
