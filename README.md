@@ -13,4 +13,4 @@ This leaflet map represent the positions of all the stations in Brussels
 
 ### Villo in time
 In this map, you can see the different frequencie of bikes in the time, you have a slider to select the historical of bikes
-![time](pictures/fresPlot.png)
+![time](pictures/freqPlot.png)
