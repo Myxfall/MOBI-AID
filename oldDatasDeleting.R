@@ -9,7 +9,7 @@ timestamp <- as.POSIXct( Sys.time() )
 #Convert in INTEGER
 timestamp <- as.integer( timestamp )
 #Substract 604800 sec on the timestamp to have the timeStamp one week ago
-timeStampWeekAgo <- timestamp - 604800
+timeStampWeekAgo <- ( timestamp - 604800 ) * 1000
 
 #Connect to the dataBase
 con <- dbConnect(SQLite(), dbname="mobilityBike.db")
