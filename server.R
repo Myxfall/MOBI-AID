@@ -10,12 +10,12 @@ library(xts)
 
 server <- function(input, output, session) {
   
-  con <- dbConnect(SQLite(), dbname="mobilityBike.db")
+  con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
   query <- "SELECT longitude FROM StaticTable ORDER BY number"
   long <- unlist(dbGetQuery(con, query))
   query <- "SELECT latitude FROM StaticTable ORDER BY number"
   lat <- unlist(dbGetQuery(con, query))
-  query <- "SELECT address FROM StaticTable ORDER BY number"
+  query <- "SELECT name FROM StaticTable ORDER BY number"
   add <- as.vector(unlist(dbGetQuery(con, query)))
   
   mat <- matrix(c(long,lat), ncol = 2)

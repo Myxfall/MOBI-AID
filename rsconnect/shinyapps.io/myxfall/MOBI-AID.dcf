@@ -1,0 +1,10 @@
+name: MOBI-AID
+account: myxfall
+server: shinyapps.io
+appId: 143498
+bundleId: 705912
+url: https://myxfall.shinyapps.io/MOBI-AID/
+when: 1486640167.42103
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Bruxelles-Capitale.json|correlation.R|dashboard.R|dynamicTable.R|mobilityBike_save.db|mobilityBike.db|notebookAnalyse.ipynb|oldDatasDeleting.R|parserStations.R|README.md|staticTable.R|testFile.R|pictures/freqPlot.png|pictures/plot.png|pictures/positions.png
