@@ -1,3 +1,6 @@
+#!/usr/bin/Rscript
+setwd("/home/maxromain/MOBI-AID")
+
 library("dplyr")
 library("RSQLite")
 
@@ -8,7 +11,7 @@ UrlDecaux <- function(decaux,key) {
   else {
     delim <- '?'
   }
-  sprintf("https://api.jcdecaux.com/vls/v1/%s%sapiKey=%s",decaux,delim,key)
+  url(sprintf("https://api.jcdecaux.com/vls/v1/%s%sapiKey=%s",decaux,delim,key))
 }
 
 GetJsonDecaux <- function(decaux, key = DecauxKey) {

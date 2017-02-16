@@ -1,3 +1,6 @@
+#!/usr/bin/Rscript
+setwd("/home/maxromain/MOBI-AID")
+
 library("dplyr")
 library("RSQLite")
 
