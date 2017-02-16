@@ -1,6 +1,3 @@
-#!/usr/bin/Rscript
-setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI-AID/")
-
 library("dplyr")
 library("RSQLite")
 
