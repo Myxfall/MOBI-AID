@@ -1,5 +1,10 @@
+#!/usr/bin/Rscript
+setwd("/Users/user/Documents/3eme/MOBI-AID/MOBI_New/MOBI-AID")
+
 library("dplyr")
 library("RSQLite")
+library("ape")
+
 
 #Connection to database
 con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
@@ -29,6 +34,11 @@ stationDataFrame <- NULL
 for (i in 1:nrow(tmpDataFrame)) {
   stationDataFrame <- rbind(stationDataFrame, tmpDataFrame[[i, 2]])
 }
+
+distEucl <- dist(as.matrix(stationDataFrame))
+hc <- hclust(distEucl)
+plot(as.dendrogram(hc), hang = -1, cex = 0.3, xlab = "Cluster", horiz = TRUE)
+#plot(as.phylo(hc), type = "fan", cex = 0.3)
 
 
 
