@@ -37,6 +37,7 @@ for (i in 1:nrow(tmpDataFrame)) {
   stationDataFrame <- rbind(stationDataFrame, tmpDataFrame[[i, 2]])
 }
 
+if (FALSE){
 distEucl <- dist(as.matrix(stationDataFrame))
 hc <- hclust(distEucl)
 
@@ -45,14 +46,14 @@ dend <- rotate(dend, 1:150)
 dend <- color_branches(dend, k=20)
 dend <- set(dend, "labels_cex", 0.1)
 plot(dend)
-
+}
 
 #plot(as.dendrogram(hc), hang = -1, cex = 0.3, xlab = "Cluster", horiz = TRUE)
 #plot(as.phylo(hc), type = "fan", cex = 0.3)
 #plot(hc,cex=0.5)
 #myplclust(hc, cex=0.5)
 
-#result <- pvclust(as.matrix(stationDataFrame))
-#plot(result)
+result <- parPvclust(cl=NULL, stationDataFrame, nboot = 100)
+plot(result)
 
 
