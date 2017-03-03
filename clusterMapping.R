@@ -42,3 +42,44 @@ hc <- hclust(distEucl)
 
 # Vector of cluster
 memb <- cutree(hc , k = 5)
+
+group1 <- vector()
+group2 <- vector()
+group3 <- vector()
+group4 <- vector()
+group5 <- vector()
+
+for (i in 1:length(memb)) {
+  #Separing in clusters
+  if (memb[i] == 1) {
+    group1[length(group1)+1] <- i
+  }
+  else if (memb[i] == 2) {
+    group2[length(group2)+1] <- i
+  }
+  else if (memb[i] == 3) {
+    group3[length(group3)+1] <- i
+  }
+  else if (memb[i] == 4) {
+    group4[length(group4)+1] <- i
+  }
+  else if (memb[i] == 5) {
+    group5[length(group5)+1] <- i
+  }
+}
+
+con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
+query <- "SELECT number, latitude, longitude FROM StaticTable ORDER BY number"
+tm <- dbGetQuery(con, query)
+
+# --------- CLUSTER 1 ---------
+cluster1_long <- vector()
+cluster1_lat <- vector()
+for (i in 1:length(group1)) {
+  ID <- tm$number[i]
+  long <- tm$longitude[i]
+  lat <- tm$latitude[i]
+  
+  cluster1_long[i] <- long
+  cluster1_lat[i] <- lat
+}
