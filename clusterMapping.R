@@ -83,3 +83,7 @@ for (i in 1:length(group1)) {
   cluster1_long[i] <- long
   cluster1_lat[i] <- lat
 }
+
+# URL GGMAP:
+#1: https://github.com/dkahle/ggmap
+#2: http://www.comeetie.fr/partage/ehess/
