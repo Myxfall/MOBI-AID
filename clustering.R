@@ -7,6 +7,7 @@ library("ape")
 library("rafalib")
 library("pvclust")
 library("dendextend")
+library("graphics")
 
 #Connection to database
 con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
@@ -53,7 +54,7 @@ plot(dend)
 #plot(hc,cex=0.5)
 #myplclust(hc, cex=0.5)
 
-result <- parPvclust(cl=NULL, stationDataFrame, nboot = 100)
-plot(result)
+#result <- parPvclust(cl=NULL, stationDataFrame, nboot = 100)
+#plot(result)
 
-
+# COMMENT: Station dans l'ordre --> ID_MAPPING
