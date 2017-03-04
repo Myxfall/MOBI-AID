@@ -8,6 +8,8 @@ library("rafalib")
 library("pvclust")
 library("dendextend")
 library("graphics")
+library("ggmap")
+
 
 #Connection to database
 con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
@@ -72,17 +74,36 @@ con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
 query <- "SELECT number, latitude, longitude FROM StaticTable ORDER BY number"
 tm <- dbGetQuery(con, query)
 
+#TODO: bug ici, il prend à la suite, et non la bonne station
 # --------- CLUSTER 1 ---------
 cluster1_long <- vector()
 cluster1_lat <- vector()
 for (i in 1:length(group1)) {
-  ID <- tm$number[i]
-  long <- tm$longitude[i]
-  lat <- tm$latitude[i]
+  ID <- tm$number[group1[i]]
+  long <- tm$longitude[group1[i]]
+  lat <- tm$latitude[group1[i]]
   
   cluster1_long[i] <- long
   cluster1_lat[i] <- lat
 }
+
+# --------- CLUSTER 2 ---------
+cluster2_long <- vector()
+cluster2_lat <- vector()
+for (i in 1:length(group2)) {
+  ID <- tm$number[group2[i]]
+  long <- tm$longitude[group2[i]]
+  lat <- tm$latitude[group2[i]]
+  
+  cluster2_long[i] <- long
+  cluster2_lat[i] <- lat
+}
+
+
+map <- get_map(location = 'Brussels', zoom = 12)
+cluster1Pos <- data.frame(lon = cluster1_long, lat = cluster1_lat)
+cluster2Pos <- data.frame(lon = cluster2_long, lat = cluster2_lat)
+ggmap(map) + geom_point(data = cluster1Pos, aes(x = cluster1Pos$lon, y = cluster1Pos$lat, size = 1), alpha = 1, color = "red") + geom_point(data = cluster2Pos, aes(x = cluster2Pos$lon, y = cluster2Pos$lat, size = 1), alpha = 1, color = "blue")
 
 # URL GGMAP:
 #1: https://github.com/dkahle/ggmap
