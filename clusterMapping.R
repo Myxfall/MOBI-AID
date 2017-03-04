@@ -99,11 +99,53 @@ for (i in 1:length(group2)) {
   cluster2_lat[i] <- lat
 }
 
+# --------- CLUSTER 3 ---------
+cluster3_long <- vector()
+cluster3_lat <- vector()
+for (i in 1:length(group3)) {
+  ID <- tm$number[group3[i]]
+  long <- tm$longitude[group3[i]]
+  lat <- tm$latitude[group3[i]]
+  
+  cluster3_long[i] <- long
+  cluster3_lat[i] <- lat
+}
+
+# --------- CLUSTER 4 ---------
+cluster4_long <- vector()
+cluster4_lat <- vector()
+for (i in 1:length(group4)) {
+  ID <- tm$number[group4[i]]
+  long <- tm$longitude[group4[i]]
+  lat <- tm$latitude[group4[i]]
+  
+  cluster4_long[i] <- long
+  cluster4_lat[i] <- lat
+}
+
+# --------- CLUSTER 5 ---------
+cluster5_long <- vector()
+cluster5_lat <- vector()
+for (i in 1:length(group5)) {
+  ID <- tm$number[group5[i]]
+  long <- tm$longitude[group5[i]]
+  lat <- tm$latitude[group5[i]]
+  
+  cluster5_long[i] <- long
+  cluster5_lat[i] <- lat
+}
 
 map <- get_map(location = 'Brussels', zoom = 12)
 cluster1Pos <- data.frame(lon = cluster1_long, lat = cluster1_lat)
 cluster2Pos <- data.frame(lon = cluster2_long, lat = cluster2_lat)
-ggmap(map) + geom_point(data = cluster1Pos, aes(x = cluster1Pos$lon, y = cluster1Pos$lat, size = 1), alpha = 1, color = "red") + geom_point(data = cluster2Pos, aes(x = cluster2Pos$lon, y = cluster2Pos$lat, size = 1), alpha = 1, color = "blue")
+cluster3Pos <- data.frame(lon = cluster3_long, lat = cluster3_lat)
+cluster4Pos <- data.frame(lon = cluster4_long, lat = cluster4_lat)
+cluster5Pos <- data.frame(lon = cluster5_long, lat = cluster5_lat)
+ggmap(map) + geom_point(data = cluster1Pos, aes(x = cluster1Pos$lon, y = cluster1Pos$lat, size = 1), alpha = 1, color = "red") + 
+  geom_point(data = cluster2Pos, aes(x = cluster2Pos$lon, y = cluster2Pos$lat, size = 1), alpha = 1, color = "blue") +
+  geom_point(data = cluster3Pos, aes(x = cluster3Pos$lon, y = cluster3Pos$lat, size = 1), alpha = 1, color = "green") +
+  geom_point(data = cluster4Pos, aes(x = cluster4Pos$lon, y = cluster4Pos$lat, size = 1), alpha = 1, color = "yellow") +
+  geom_point(data = cluster5Pos, aes(x = cluster5Pos$lon, y = cluster5Pos$lat, size = 1), alpha = 1, color = "pink")
 
 # URL GGMAP:
 #1: https://github.com/dkahle/ggmap
