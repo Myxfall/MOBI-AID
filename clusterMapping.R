@@ -145,7 +145,7 @@ ggmap(map) + geom_point(data = cluster1Pos, aes(x = cluster1Pos$lon, y = cluster
   geom_point(data = cluster2Pos, aes(x = cluster2Pos$lon, y = cluster2Pos$lat, size = 1), alpha = 1, color = "blue") +
   geom_point(data = cluster3Pos, aes(x = cluster3Pos$lon, y = cluster3Pos$lat, size = 1), alpha = 1, color = "green") +
   geom_point(data = cluster4Pos, aes(x = cluster4Pos$lon, y = cluster4Pos$lat, size = 1), alpha = 1, color = "yellow") +
-  geom_point(data = cluster5Pos, aes(x = cluster5Pos$lon, y = cluster5Pos$lat, size = 1), alpha = 1, color = "pink")
+  geom_point(data = cluster5Pos, aes(x = cluster5Pos$lon, y = cluster5Pos$lat, size = 1), alpha = 1, color = "purple")
 
 # URL GGMAP:
 #1: https://github.com/dkahle/ggmap
