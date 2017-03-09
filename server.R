@@ -67,6 +67,7 @@ server <- function(input, output, session) {
     output$dygraph <- renderDygraph(dygraph(xtsData) %>% dyRangeSelector())
     
     # ---------- SLIDER TIME ----------
+    #Modifier algorithme:  parcours jusquau nbr séléectionner.  passe à false, chercher station suivante et recommencer
     selectedTime <- as.numeric(input$slider)
     #Getting the informations of the selected timeStamp
     selectedTimeStamp <- 1
