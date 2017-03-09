@@ -16,7 +16,7 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
       menuItem("Villo in time", tabName = "villoTime", icon = icon("calendar")),
-      menuItem("Informations", tabName = "information", icon = icon("database")),
+      menuItem("Cluster", tabName = "cluster", icon = icon("database")),
       menuItem("Source code", icon = icon("file-code-o"), 
                href = "https://github.com/Myxfall/MOBI-AID")
     )
@@ -42,8 +42,23 @@ ui <- dashboardPage(
                 sliderInput("slider", label = h3("Select Time"), min = 1, max = 100, value = 1)
               ),width = 100)
       ),
-      tabItem(tabName = "information", 
-              h2("Dashboard informations"))
+      tabItem(tabName = "cluster", 
+              box(
+                fluidPage(
+                  radioButtons("clusterDist", label = h3("Distance method"), choices = list("Euclidean" = 1, "Maximum" = 2, "Manhattan" = 3, "canberra" = 4, "binary" = 5, "minkowski" = 6), selected = 1)
+                  )
+              ),
+              box(
+                fluidPage(
+                  radioButtons("clusterAvg", label = h3("Agglomeration method"), choices = list("complete" = 1, "average" = 2, "ward.D" = 3, "ward.D2" = 4, "single" = 5, "mcquitty" = 6, "median" = 7, "centroid" = 8), selected = 1)
+                )
+              ),
+              box(
+                fluidPage(numericInput("clusterNbr", label = h3("Number of cluster"), value = 5))
+              ), actionButton("clusterRun", "Run"),
+              box(plotOutput("tree"))
+              
+      )
     )
   )
 )

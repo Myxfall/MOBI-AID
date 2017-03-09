@@ -40,7 +40,8 @@ for (i in 1:nrow(tmpDataFrame)) {
 }
 
 distEucl <- dist(as.matrix(stationDataFrame))
-hc <- hclust(distEucl)
+hc <- hclust(distEucl, method = "average")
+# plot(hc)
 
 # Vector of cluster
 memb <- cutree(hc , k = 5)

@@ -8,6 +8,13 @@ library("RSQLite")
 library(dygraphs)
 library(xts)
 
+library("dplyr")
+library("ape")
+library("rafalib")
+library("dendextend")
+library("graphics")
+library("ggmap")
+
 server <- function(input, output, session) {
   
   con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
@@ -20,6 +27,7 @@ server <- function(input, output, session) {
   
   mat <- matrix(c(long,lat), ncol = 2)
   
+  # ---------- VILLO MAP ----------
   map = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addMarkers(data = mat, popup = add)
   output$plot1 = renderLeaflet(map)
   
@@ -43,6 +51,12 @@ server <- function(input, output, session) {
                     choices = namesStation
                     #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
   )
+  
+  # ---------- Clustering ----------
+  #link: https://github.com/joyofdata/hclust-shiny
+  observeEvent(input$clusterRun, {
+    print("HAAAALLLLOOO")
+  })
   
   observe({
     dataName <- as.character(input$listStations)
