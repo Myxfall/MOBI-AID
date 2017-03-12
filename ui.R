@@ -45,12 +45,12 @@ ui <- dashboardPage(
       tabItem(tabName = "cluster", 
               box(
                 fluidPage(
-                  radioButtons("clusterDist", label = h3("Distance method"), choices = list("Euclidean" = "euclidean", "Maximum" = "maximum", "Manhattan" = "manhattan", "Canberra" = "canberra", "Binary" = "binary", "Minkowski" = "minkowski"), selected = 1)
+                  radioButtons("clusterDist", label = h3("Distance method"), choices = list("Euclidean" = "euclidean", "Maximum" = "maximum", "Manhattan" = "manhattan", "Canberra" = "canberra", "Binary" = "binary", "Minkowski" = "minkowski"), selected = "euclidean")
                   )
               ),
               box(
                 fluidPage(
-                  radioButtons("clusterAvg", label = h3("Agglomeration method"), choices = list("complete" = "complete", "average" = "average", "ward.D" = "ward.D", "ward.D2" = "ward.D2", "single" = "single", "mcquitty" = "mcquitty", "median" = "median", "centroid" = "centroid"), selected = 1)
+                  radioButtons("clusterAvg", label = h3("Agglomeration method"), choices = list("complete" = "complete", "average" = "average", "ward.D" = "ward.D", "ward.D2" = "ward.D2", "single" = "single", "mcquitty" = "mcquitty", "median" = "median", "centroid" = "centroid"), selected = "complete")
                 )
               ),
               box(
