@@ -80,17 +80,19 @@ server <- function(input, output, session) {
   # ---------- Clustering ----------
   #link: https://github.com/joyofdata/hclust-shiny
   observeEvent(input$clusterRun, {
-    print(paste("Calculing clusters with ", input$clusterDist, "distance and", input$clusterAvg, "agglomerative method"))
+    print(paste("Calculing clusters with", input$clusterDist, "distance and", input$clusterAvg, "agglomerative method"))
     distEucl <- dist(as.matrix(stationDataFrame, method = input$clusterDist))
     hc <- hclust(distEucl, method = input$clusterAvg)
     
     dend <- as.dendrogram(hc)
-    dend <- rotate(dend)
+    #dend <- rotate(dend)
     dend <- color_branches(dend, k = input$clusterNbr)
     dend <- set(dend, "labels_cex", 0.1)
 
     output$tree <- renderPlot({
       plot(dend)
+      
+    print("Plotting done...")
     })
   })
   

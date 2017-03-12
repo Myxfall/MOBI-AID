@@ -46,7 +46,7 @@ ui <- dashboardPage(
               box(
                 fluidPage(
                   radioButtons("clusterDist", label = h3("Distance method"), choices = list("Euclidean" = "euclidean", "Maximum" = "maximum", "Manhattan" = "manhattan", "Canberra" = "canberra", "Binary" = "binary", "Minkowski" = "minkowski"), selected = "euclidean")
-                  )
+                )
               ),
               box(
                 fluidPage(
