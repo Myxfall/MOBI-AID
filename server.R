@@ -52,6 +52,8 @@ server <- function(input, output, session) {
                     #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
   )
   
+  
+  # ---------- CLUSTER DATAS --------
   query <- paste("SELECT number FROM staticTable ORDER BY number")
   ID_MAPPING <- as.vector(unlist(dbGetQuery(con, query)))
   
