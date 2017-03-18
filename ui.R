@@ -56,7 +56,7 @@ ui <- dashboardPage(
               box(
                 fluidPage(numericInput("clusterNbr", label = h3("Number of cluster"), value = 5))
               ), actionButton("clusterRun", "Run"),
-              box(plotOutput("tree"))
+              box(plotOutput("tree")), leafletOutput("clusterMap", height = 600, width = 600)
               
       )
     )

@@ -52,7 +52,6 @@ server <- function(input, output, session) {
                     #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
   )
   
-  
   # ---------- CLUSTER DATAS --------
   query <- paste("SELECT number FROM staticTable ORDER BY number")
   ID_MAPPING <- as.vector(unlist(dbGetQuery(con, query)))
@@ -81,6 +80,7 @@ server <- function(input, output, session) {
   
   # ---------- Clustering ----------
   #link: https://github.com/joyofdata/hclust-shiny
+  colostList <- c("red", "blue", "purple", "yellow", "green", "tan4", "cornsilk3", "aquamarine3")
   observeEvent(input$clusterRun, {
     print(paste("Calculing clusters with", input$clusterDist, "distance and", input$clusterAvg, "agglomerative method"))
     distEucl <- dist(as.matrix(stationDataFrame, method = input$clusterDist))
@@ -96,6 +96,72 @@ server <- function(input, output, session) {
       
     print("Plotting done...")
     })
+    
+    # ----- Cluster Mapping -----
+    clusterNbr <- input$clusterNbr
+    memb <- cutree(hc, k = clusterNbr)
+    
+    groupList <- vector("list", clusterNbr)
+    for (clust in 1:clusterNbr) {
+      #Create empty vector
+      group <- vector()
+      
+      #Boucle in memb, making groups by putting good data in right group
+      for (i in 1:length(memb)) {
+        if (memb[i] == clust) {
+          group[length(group)+1] <- i
+        }
+      }
+      groupList[[clust]] <- group
+    }
+    
+    con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
+    query <- "SELECT number, latitude, longitude FROM StaticTable ORDER BY number"
+    tm <- dbGetQuery(con, query)
+    
+    #Create for each group, lat & long vector
+    latList <- vector("list", clusterNbr)
+    longList <- vector("list", clusterNbr)
+    for (clust in 1:clusterNbr) {
+      #Empty cluster for on group
+      cluster_lat <- vector()
+      cluster_long <- vector()
+      
+      #Get data for one cluster
+      for (i in 1:length(groupList[[clust]])) {
+        ID <- tm$number[groupList[[clust]][i]]
+        long <- tm$longitude[groupList[[clust]][i]]
+        lat <- tm$latitude[groupList[[clust]][i]]
+        
+        cluster_long[i] <- long
+        cluster_lat[i] <- lat
+      }
+      #push in latList & longList
+      latList[[clust]] <- cluster_lat
+      longList[[clust]] <- cluster_long
+    }
+    print(latList)
+    print(longList)
+    
+    mapCluster = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13)
+    for (i in 1:clusterNbr) {
+      mat <- matrix(c(longList[[i]], latList[[i]]), ncol = 2)
+      
+      mapCluster = mapCluster %>% addCircleMarkers(data = mat, color = colostList[i], stroke = FALSE, fillOpacity = 0.8)
+    }
+    output$clusterMap = renderLeaflet(mapCluster)
+    
+    #mat1 <- matrix(c(longList[[1]], latList[[1]]), ncol = 2)
+    #mat2 <- matrix(c(longList[[3]], latList[[3]]), ncol = 2)
+    
+    #mapCluster = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addCircleMarkers(data = mat1, color = colostList[1])
+    #mapCluster = mapCluster %>% addCircleMarkers(data = mat2, color = colostList[2])
+    #output$clusterMap = renderLeaflet(mapCluster)
+    
+    #mat <- matrix(c(long,lat), ncol = 2)
+    #mapCluster = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addMarkers(data = mat, popup = add)
+    #output$clusterMap = renderLeaflet(mapCluster)
+    
   })
   
   observe({
