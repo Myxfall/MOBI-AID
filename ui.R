@@ -17,6 +17,7 @@ ui <- dashboardPage(
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
       menuItem("Villo in time", tabName = "villoTime", icon = icon("calendar")),
       menuItem("Cluster", tabName = "cluster", icon = icon("database")),
+      menuItem("Prediction", tabName = "prediction", icon = icon("area-chart")),
       menuItem("Source code", icon = icon("file-code-o"), 
                href = "https://github.com/Myxfall/MOBI-AID")
     )
@@ -57,6 +58,15 @@ ui <- dashboardPage(
                 fluidPage(numericInput("clusterNbr", label = h3("Number of cluster"), value = 5))
               ), actionButton("clusterRun", "Run"),
               box(plotOutput("tree")), leafletOutput("clusterMap", height = 600, width = 600)
+              
+      ),
+      tabItem(tabName = "prediction", 
+              box(fluidPage(
+                selectInput("listStations_two", label = h3("Select a station"), 
+                            choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3), selected = 1),
+                radioButtons("predictionMethod", label = h3("Prediction method"), choices = list("Constant Prediction" = 1, "Same Prediction" = 2, "Three" = 3), selected = "1"),
+                dygraphOutput("futurDygraph")
+              ), width = 100)
               
       )
     )

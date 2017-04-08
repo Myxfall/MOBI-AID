@@ -34,8 +34,7 @@ server <- function(input, output, session) {
   # ---------- VILLO IN TIME ----------
   query <- paste("SELECT stationID, timeStamp, available_bikes FROM dynamicTable ORDER BY stationID")
   timeVilloFrame <- dbGetQuery(con, query)
-  print(timeVilloFrame)
-  
+
   query <- paste0("SELECT stationID FROM dynamicTable WHERE stationID = 1")
   station_One <- dbGetQuery(con, query)
   numberOccurrence <- length(station_One[[1]])
@@ -46,12 +45,14 @@ server <- function(input, output, session) {
   query <- "SELECT name from StaticTable ORDER BY number"
   namesStation <- dbGetQuery(con, query)
   
-  #link: http://shiny.rstudio.com/reference/shiny/latest/updateSelectInput.html
   updateSelectInput(session, "listStations",
                     choices = namesStation
-                    #choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3, "YOYO 4" = 4, "MAISON 5" = 5)
+  )
+  updateSelectInput(session, "listStations_two",
+                    choices = namesStation
   )
   
+  if (FALSE) { #Comment section 
   # ---------- CLUSTER DATAS --------
   query <- paste("SELECT number FROM staticTable ORDER BY number")
   ID_MAPPING <- as.vector(unlist(dbGetQuery(con, query)))
@@ -77,6 +78,7 @@ server <- function(input, output, session) {
   for (i in 1:nrow(tmpDataFrame)) {
     stationDataFrame <- rbind(stationDataFrame, tmpDataFrame[[i, 2]])
   }
+  } #End comment
   
   # ---------- Clustering ----------
   #link: https://github.com/joyofdata/hclust-shiny
@@ -140,8 +142,6 @@ server <- function(input, output, session) {
       latList[[clust]] <- cluster_lat
       longList[[clust]] <- cluster_long
     }
-    print(latList)
-    print(longList)
     
     mapCluster = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13)
     for (i in 1:clusterNbr) {
@@ -196,11 +196,53 @@ server <- function(input, output, session) {
     for (i in seq(selectedTime,length(timeVilloFrame[[1]]), numberOccurrence)) {
       #Multiple value for better vizualisation
       bikes[indexVect] <- timeVilloFrame[[3]][i] * 5
-      print(bikes[indexVect])
       indexVect <- indexVect + 1
     }
     
     mapInTime = leaflet() %>% addTiles() %>% setView(4.350382, 50.847436, zoom = 13) %>% addCircles(data = mat, radius = bikes, popup = add, color='red')
-    output$plot2 = renderLeaflet(mapInTime)    
+    output$plot2 = renderLeaflet(mapInTime)
+  })
+  
+  observe({
+    dataNameB <- as.character(input$listStations_two)
+    
+    queryOneB <- paste0("SELECT timeStamp FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataNameB,"')")
+    queryTwoB <- paste0("SELECT available_bikes FROM dynamicTable WHERE stationID IN (SELECT number from staticTable WHERE name = '",dataNameB,"')")
+    dataTimeB <- dbGetQuery(con, queryOneB)
+    dataBikeB <- dbGetQuery(con, queryTwoB)
+    
+    doubleVectorDateB <- Sys.time()+1:length(dataTimeB[[1]])
+    for (i in 1:length(dataTimeB[[1]])) {
+      tmpB <-  as.POSIXct(dataTimeB[[1]][i]/1000, origin="1970-01-01")
+      doubleVectorDateB[i] <- tmpB
+    }
+    xtsDataB <- xts(dataBikeB, doubleVectorDateB)
+    
+    #Constante prediction
+    if (input$predictionMethod == 1) {
+      lastData <- dataBikeB[[1]][length(dataBikeB[[1]])]
+      lastTime <- dataTimeB[[1]][length(dataTimeB[[1]])]
+      futurData <- vector()
+      futurTime <- vector()
+      for (i in 1:25){
+        futurData[i] <- lastData
+        #Adding data for each hour (epoch time in millisecond, adding 1 hour per data)
+        futurTime[i] <- lastTime + ((i-1) * 3600 * 1000)
+      }
+      doubleVectorDateBB <- Sys.time()+1:25
+      for (i in 1:25) {
+        tmpBB <-  as.POSIXct(futurTime[i]/1000, origin="1970-01-01")
+        doubleVectorDateBB[i] <- tmpBB
+      }
+      xtsDataBB <- xts(futurData, doubleVectorDateBB)
+    }
+    a <- cbind(xtsDataB, xtsDataBB)
+    #output$futurDygraph <- renderDygraph(dygraph(xtsDataBB) %>% dyRangeSelector() %>% dyOptions(colors = "red"))    
+    output$futurDygraph <- renderDygraph(dygraph(a) %>% dyRangeSelector() %>% dyOptions(colors = c("green", "red")))
+    
+    #Same prediction
+    else if (input$predictionMethod == 2) {
+    
+    }
   })
 }
