@@ -40,7 +40,7 @@ for (i in 1:nrow(tmpDataFrame)) {
 
 if (TRUE){
 distEucl <- dist(as.matrix(stationDataFrame))
-hc <- hclust(distEucl)
+hc <- hclust(distEucl, method = "ave")
 
 dend <- as.dendrogram(hc)
 dend <- rotate(dend, 1:150)
