@@ -236,13 +236,13 @@ server <- function(input, output, session) {
       }
       xtsDataBB <- xts(futurData, doubleVectorDateBB)
     }
-    a <- cbind(xtsDataB, xtsDataBB)
-    #output$futurDygraph <- renderDygraph(dygraph(xtsDataBB) %>% dyRangeSelector() %>% dyOptions(colors = "red"))    
-    output$futurDygraph <- renderDygraph(dygraph(a) %>% dyRangeSelector() %>% dyOptions(colors = c("green", "red")))
-    
     #Same prediction
     else if (input$predictionMethod == 2) {
     
     }
+    
+    a <- cbind(xtsDataB, xtsDataBB)
+    #output$futurDygraph <- renderDygraph(dygraph(xtsDataBB) %>% dyRangeSelector() %>% dyOptions(colors = "red"))    
+    output$futurDygraph <- renderDygraph(dygraph(a) %>% dyRangeSelector() %>% dyOptions(colors = c("green", "red")))
   })
 }
