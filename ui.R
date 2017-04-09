@@ -16,7 +16,8 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Dashboard", tabName = "dashboard", icon = icon("dashboard")),
       menuItem("Villo in time", tabName = "villoTime", icon = icon("calendar")),
-      menuItem("Informations", tabName = "information", icon = icon("database")),
+      menuItem("Cluster", tabName = "cluster", icon = icon("database")),
+      menuItem("Prediction", tabName = "prediction", icon = icon("area-chart")),
       menuItem("Source code", icon = icon("file-code-o"), 
                href = "https://github.com/Myxfall/MOBI-AID")
     )
@@ -42,8 +43,32 @@ ui <- dashboardPage(
                 sliderInput("slider", label = h3("Select Time"), min = 1, max = 100, value = 1)
               ),width = 100)
       ),
-      tabItem(tabName = "information", 
-              h2("Dashboard informations"))
+      tabItem(tabName = "cluster", 
+              box(
+                fluidPage(
+                  radioButtons("clusterDist", label = h3("Distance method"), choices = list("Euclidean" = "euclidean", "Maximum" = "maximum", "Manhattan" = "manhattan", "Canberra" = "canberra", "Binary" = "binary", "Minkowski" = "minkowski"), selected = "euclidean")
+                )
+              ),
+              box(
+                fluidPage(
+                  radioButtons("clusterAvg", label = h3("Agglomeration method"), choices = list("complete" = "complete", "average" = "average", "ward.D" = "ward.D", "ward.D2" = "ward.D2", "single" = "single", "mcquitty" = "mcquitty", "median" = "median", "centroid" = "centroid"), selected = "complete")
+                )
+              ),
+              box(
+                fluidPage(numericInput("clusterNbr", label = h3("Number of cluster"), value = 5))
+              ), actionButton("clusterRun", "Run"),
+              box(plotOutput("tree")), leafletOutput("clusterMap", height = 600, width = 600)
+              
+      ),
+      tabItem(tabName = "prediction", 
+              box(fluidPage(
+                selectInput("listStations_two", label = h3("Select a station"), 
+                            choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3), selected = 1),
+                radioButtons("predictionMethod", label = h3("Prediction method"), choices = list("Constant Prediction" = 1, "Same Prediction" = 2, "Three" = 3), selected = "1"),
+                dygraphOutput("futurDygraph")
+              ), width = 100)
+              
+      )
     )
   )
 )

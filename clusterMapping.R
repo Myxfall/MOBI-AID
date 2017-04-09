@@ -41,7 +41,55 @@ for (i in 1:nrow(tmpDataFrame)) {
 
 distEucl <- dist(as.matrix(stationDataFrame))
 hc <- hclust(distEucl)
+# plot(hc)
 
+# ---------- dynamic method --------
+# Ask number cluster
+clusterNbr <- 5
+memb <- cutree(hc, k = clusterNbr)
+
+groupList <- vector("list", clusterNbr)
+for (clust in 1:clusterNbr) {
+  #Create empty vector
+  group <- vector()
+  
+  #Boucle in memb, making groups by putting good data in right group
+  for (i in 1:length(memb)) {
+    if (memb[i] == clust) {
+      group[length(group)+1] <- i
+    }
+  }
+  groupList[[clust]] <- group
+}
+
+con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
+query <- "SELECT number, latitude, longitude FROM StaticTable ORDER BY number"
+tm <- dbGetQuery(con, query)
+
+#Create for each group, lat & long vector
+latList <- vector("list", clusterNbr)
+longList <- vector("list", clusterNbr)
+for (clust in 1:clusterNbr) {
+  #Empty cluster for on group
+  cluster_lat <- vector()
+  cluster_long <- vector()
+  
+  #Get data for one cluster
+  for (i in 1:length(groupList[[clust]])) {
+    ID <- tm$number[groupList[[clust]][i]]
+    long <- tm$longitude[groupList[[clust]][i]]
+    lat <- tm$latitude[groupList[[clust]][i]]
+    
+    cluster_long[i] <- long
+    cluster_lat[i] <- lat
+  }
+  #push in latList & longList
+  latList[[clust]] <- cluster_lat
+  longList[[clust]] <- cluster_long
+}
+
+if (FALSE) {
+#---------- Static method ---------
 # Vector of cluster
 memb <- cutree(hc , k = 5)
 
@@ -135,6 +183,7 @@ for (i in 1:length(group5)) {
   cluster5_lat[i] <- lat
 }
 
+
 map <- get_map(location = 'Brussels', zoom = 12)
 cluster1Pos <- data.frame(lon = cluster1_long, lat = cluster1_lat)
 cluster2Pos <- data.frame(lon = cluster2_long, lat = cluster2_lat)
@@ -146,7 +195,9 @@ ggmap(map) + geom_point(data = cluster1Pos, aes(x = cluster1Pos$lon, y = cluster
   geom_point(data = cluster3Pos, aes(x = cluster3Pos$lon, y = cluster3Pos$lat, size = 1), alpha = 1, color = "green") +
   geom_point(data = cluster4Pos, aes(x = cluster4Pos$lon, y = cluster4Pos$lat, size = 1), alpha = 1, color = "yellow") +
   geom_point(data = cluster5Pos, aes(x = cluster5Pos$lon, y = cluster5Pos$lat, size = 1), alpha = 1, color = "purple")
+}
 
+map <- get_map(location = 'Brussels', zoom = 12)
 # URL GGMAP:
 #1: https://github.com/dkahle/ggmap
 #2: http://www.comeetie.fr/partage/ehess/
