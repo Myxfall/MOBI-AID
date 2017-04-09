@@ -218,28 +218,34 @@ server <- function(input, output, session) {
     }
     xtsDataB <- xts(dataBikeB, doubleVectorDateB)
     
+    lastData <- dataBikeB[[1]][length(dataBikeB[[1]])]
+    lastTime <- dataTimeB[[1]][length(dataTimeB[[1]])]
+    futurData <- vector()
+    futurTime <- vector()
+    
     #Constante prediction
     if (input$predictionMethod == 1) {
-      lastData <- dataBikeB[[1]][length(dataBikeB[[1]])]
-      lastTime <- dataTimeB[[1]][length(dataTimeB[[1]])]
-      futurData <- vector()
-      futurTime <- vector()
-      for (i in 1:25){
+      for (i in 1:25) {
         futurData[i] <- lastData
         #Adding data for each hour (epoch time in millisecond, adding 1 hour per data)
         futurTime[i] <- lastTime + ((i-1) * 3600 * 1000)
       }
-      doubleVectorDateBB <- Sys.time()+1:25
-      for (i in 1:25) {
-        tmpBB <-  as.POSIXct(futurTime[i]/1000, origin="1970-01-01")
-        doubleVectorDateBB[i] <- tmpBB
-      }
-      xtsDataBB <- xts(futurData, doubleVectorDateBB)
     }
     #Same prediction
     else if (input$predictionMethod == 2) {
-    
+      for (i in 1:25) {
+        #futurData[i] <- dataBikeB[[1]][length(dataBikeB[[1]]) - (25 - i)]
+        futurData[i] <- dataBikeB[[1]][length(dataBikeB[[1]]) - (12 * (25 - i)) ]
+        
+        futurTime[i] <- lastTime + ((i-1) * 3600 * 1000)
+      }
     }
+    doubleVectorDateBB <- Sys.time()+1:25
+    for (i in 1:25) {
+      tmpBB <-  as.POSIXct(futurTime[i]/1000, origin="1970-01-01")
+      doubleVectorDateBB[i] <- tmpBB
+    }
+    xtsDataBB <- xts(futurData, doubleVectorDateBB)
     
     a <- cbind(xtsDataB, xtsDataBB)
     #output$futurDygraph <- renderDygraph(dygraph(xtsDataBB) %>% dyRangeSelector() %>% dyOptions(colors = "red"))    
