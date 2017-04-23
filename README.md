@@ -12,7 +12,7 @@ Dashboard of bikeStations villo in brussels
 ### Installation
 
     ./dynamicTable.R
-    ./paserStations.R
+    ./parserStations.R
     
     ./dashboard.R
  
