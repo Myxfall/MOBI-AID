@@ -222,16 +222,23 @@ server <- function(input, output, session) {
     lastTime <- dataTimeB[[1]][length(dataTimeB[[1]])]
     futurData <- vector()
     futurTime <- vector()
+    xtsDataBB <- NULL
     
-    #Constante prediction
+    #Last value prediction
     if (input$predictionMethod == 1) {
       for (i in 1:25) {
         futurData[i] <- lastData
         #Adding data for each hour (epoch time in millisecond, adding 1 hour per data)
         futurTime[i] <- lastTime + ((i-1) * 3600 * 1000)
       }
+      doubleVectorDateBB <- Sys.time()+1:25
+      for (i in 1:25) {
+        tmpBB <-  as.POSIXct(futurTime[i]/1000, origin="1970-01-01")
+        doubleVectorDateBB[i] <- tmpBB
+      }
+      xtsDataBB <- xts(futurData, doubleVectorDateBB)
     }
-    #Same prediction
+    #Naive method prediction
     else if (input$predictionMethod == 2) {
       for (i in 1:25) {
         #futurData[i] <- dataBikeB[[1]][length(dataBikeB[[1]]) - (25 - i)]
@@ -239,13 +246,37 @@ server <- function(input, output, session) {
         
         futurTime[i] <- lastTime + ((i-1) * 3600 * 1000)
       }
+      doubleVectorDateBB <- Sys.time()+1:25
+      for (i in 1:25) {
+        tmpBB <-  as.POSIXct(futurTime[i]/1000, origin="1970-01-01")
+        doubleVectorDateBB[i] <- tmpBB
+      }
+      xtsDataBB <- xts(futurData, doubleVectorDateBB)
     }
-    doubleVectorDateBB <- Sys.time()+1:25
-    for (i in 1:25) {
-      tmpBB <-  as.POSIXct(futurTime[i]/1000, origin="1970-01-01")
-      doubleVectorDateBB[i] <- tmpBB
+    #Drift Method prediction
+    else if (input$predictionMethod == 3) {
+      # h: predicted window
+      # m: value that h will take (1 -> m)
+      # n: total amount of data (end vector) - y_n: last value data
+      m <- 10
+      #calcul drift method
+      #y_n+h = y_n + h/n-1 (y_n - y_1)
+      y_n = lastData
+      y_1 = dataBikeB[[1]][length(dataBikeB[[1]]) - m]
+      n = m
+      for (h in 1:m){
+        y_nh <- y_n + (h/(n-1)) * (y_n - y_1)
+        futurData[h] <- y_nh
+        futurTime[h] <- lastTime + ((h-1) * 3600 * 1000)
+      }
+      doubleVectorDateBB <- Sys.time()+1:m
+      for (i in 1:m) {
+        tmpBB <-  as.POSIXct(futurTime[i]/1000, origin="1970-01-01")
+        doubleVectorDateBB[i] <- tmpBB
+      }
+      xtsDataBB <- xts(futurData, doubleVectorDateBB)
     }
-    xtsDataBB <- xts(futurData, doubleVectorDateBB)
+
     
     a <- cbind(xtsDataB, xtsDataBB)
     #output$futurDygraph <- renderDygraph(dygraph(xtsDataBB) %>% dyRangeSelector() %>% dyOptions(colors = "red"))    
