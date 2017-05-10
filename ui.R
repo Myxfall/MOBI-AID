@@ -65,7 +65,7 @@ ui <- dashboardPage(
                 selectInput("listStations_two", label = h3("Select a station"), 
                             choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3), selected = 1),
                 radioButtons("predictionMethod", label = h3("Prediction method"), choices = list("Last value" = 1, "Naïve Prediction" = 2, "Drift method" = 3), selected = "1"),
-                dygraphOutput("futurDygraph"), dygraphOutput("erreurQ")
+                dygraphOutput("futurDygraph")#, dygraphOutput("erreurQ")
               ), width = 100)
               
       )
