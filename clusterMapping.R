@@ -12,7 +12,7 @@ library("ggmap")
 
 
 #Connection to database
-con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeek.db")
+con <- dbConnect(SQLite(), dbname="mobilityBike_oneWeekbis.db")
 
 query <- paste("SELECT number FROM staticTable ORDER BY number")
 ID_MAPPING <- as.vector(unlist(dbGetQuery(con, query)))
@@ -88,7 +88,7 @@ for (clust in 1:clusterNbr) {
   longList[[clust]] <- cluster_long
 }
 
-if (FALSE) {
+if (TRUE) {
 #---------- Static method ---------
 # Vector of cluster
 memb <- cutree(hc , k = 5)
