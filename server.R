@@ -52,7 +52,7 @@ server <- function(input, output, session) {
                     choices = namesStation
   )
   
-  if (TRUE) { #Comment section 
+  if (FALSE) { #Comment section 
   # ---------- CLUSTER DATAS --------
   query <- paste("SELECT number FROM staticTable ORDER BY number")
   ID_MAPPING <- as.vector(unlist(dbGetQuery(con, query)))
