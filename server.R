@@ -82,8 +82,8 @@ server <- function(input, output, session) {
   
   # ---------- Clustering ----------
   #link: https://github.com/joyofdata/hclust-shiny
-  colostList <- c("red", "blue", "purple", "yellow", "green", "tan4", "cornsilk3", "aquamarine3")
-  #colostList <- c("red", "yellow", "green", "blue", "purple")
+  #colostList <- c("red", "blue", "purple", "yellow", "green", "tan4", "cornsilk3", "aquamarine3")
+  colostList <- c("yellow", "green", "purple", "blue", "red", "tan4", "cornsilk3", "aquamarine3")
   observeEvent(input$clusterRun, {
     print(paste("Calculing clusters with", input$clusterDist, "distance and", input$clusterAvg, "agglomerative method"))
     distEucl <- dist(as.matrix(stationDataFrame, method = input$clusterDist))
